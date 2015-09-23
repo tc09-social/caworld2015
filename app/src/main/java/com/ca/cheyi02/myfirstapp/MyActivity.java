@@ -1,11 +1,24 @@
 package com.ca.cheyi02.myfirstapp;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.EditText;
 
 public class MyActivity extends Activity {
+    public final static String EXTRA_USERNAME = "com.ca.cheyi02.myfirstapp.USERNAME";
+
+    public void login(View view) {
+        Intent intent = new Intent(this, DisplayCoursesActivity.class);
+
+        EditText usernameText = (EditText) findViewById(R.id.username_message);
+        String usernameString = usernameText.getText().toString();
+        intent.putExtra(EXTRA_USERNAME, usernameString);
+        startActivity(intent);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
