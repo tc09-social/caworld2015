@@ -11,15 +11,13 @@ public class DisplayCoursesActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        setContentView(R.layout.activity_display_courses);
+        setContentView(R.layout.activity_display_courses);
 
         Intent intent = getIntent();
         String usernameString = intent.getStringExtra(MyActivity.EXTRA_USERNAME);
-        TextView textView = new TextView(this);
-        textView.setTextSize(40);
-        textView.setText(usernameString);
 
-        setContentView(textView);
+        TextView set_usernameText = (TextView) findViewById(R.id.set_username_message);
+        set_usernameText.setText(usernameString);
     }
 
     @Override
