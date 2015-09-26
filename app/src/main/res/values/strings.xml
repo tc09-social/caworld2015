@@ -7,6 +7,7 @@
     <string name="button_login">Login</string>
     <string name="title_activity_main">MainActivity</string>
     <string name="title_activity_display_courses">Courses</string>
+    <string name="course_end_point">http://www.ca.com</string>
 
     <string name="hello_world">Hello world!</string>
 </resources>
