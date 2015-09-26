@@ -2,6 +2,7 @@ package com.ca.cheyi02.myfirstapp;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -10,8 +11,13 @@ import android.widget.TextView;
 import android.content.Intent;
 import android.widget.Toast;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 
 public class DisplayCoursesActivity extends Activity {
+    private static final String TAG = DisplayCoursesActivity.class.getName();
+
     int imageRID(String imageName) {
         if (imageName.equals("three-com-1")) return R.drawable.threecom1;
         else if (imageName.equals("three-com-2")) return R.drawable.threecom2;
@@ -76,10 +82,24 @@ public class DisplayCoursesActivity extends Activity {
 
         Intent intent = getIntent();
         String usernameString = intent.getStringExtra(MyActivity.EXTRA_USERNAME);
-
-        TextView set_usernameText = (TextView) findViewById(R.id.set_username_message);
-        set_usernameText.setText(usernameString);
-        addCourseList();
+        try {
+            JSONObject jsonObject = new JSONObject(usernameString);
+            String firstNameString = jsonObject.getString("firstName");
+            TextView set_usernameText = (TextView) findViewById(R.id.set_username_message);
+            set_usernameText.setText(firstNameString);
+            JSONObject regCourse = jsonObject.getJSONObject("regCourses");
+            JSONArray courses = regCourse.getJSONArray("course");
+            for (int i=0; i < courses.length(); ++i) {
+                JSONObject course = courses.getJSONObject(i);
+                String idString = course.getString("id");
+                String nameString = course.getString("name");
+                String imageString = course.getString("image");
+                addOneCourse(idString, nameString, imageString);
+            }
+        } catch (Exception e) {
+            Log.d(TAG, "exception", e);
+        }
+//        addCourseList();
     }
 
     @Override
