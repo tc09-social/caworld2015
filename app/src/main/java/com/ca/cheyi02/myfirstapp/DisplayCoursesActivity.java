@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -27,43 +28,17 @@ public class DisplayCoursesActivity extends Activity {
     void addOneCourse(String id, String name, String image) {
 
         LinearLayout container = (LinearLayout) findViewById(R.id.list_container);
+        View view = getLayoutInflater().inflate(R.layout.course, container, false);
+        container.addView(view);
 
-        /*
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Number"/>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Description"/>
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/image_height"
-            android:scaleType="fitXY"
-            android:src="@drawable/threecom2"/>
-         */
-        TextView tv;
+        ViewGroup viewGroup =(ViewGroup) ((ViewGroup) view).getChildAt(0);
+        TextView tv1 = (TextView) viewGroup.getChildAt(1);
+        TextView tv2 = (TextView) viewGroup.getChildAt(2);
+        ImageView iv = (ImageView) viewGroup.getChildAt(0);
 
-        tv = new TextView(this);
-        tv.setText(id);
-        container.addView(tv);
-
-        tv = new TextView(this);
-        tv.setText(name);
-        container.addView(tv);
-
-        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.MATCH_PARENT);
-
-        ImageView iv;
-        iv = new ImageView(this);
-        iv.setLayoutParams(lp);
+        tv1.setText(id);
+        tv2.setText(name);
         iv.setImageResource(imageRID(image));
-        iv.getLayoutParams().height = (int) getResources().getDimension(R.dimen.image_height);
-        iv.setScaleType(ImageView.ScaleType.FIT_XY);
-        container.addView(iv);
-
     }
 
 
