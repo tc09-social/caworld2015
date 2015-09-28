@@ -7,7 +7,7 @@
     <string name="button_login">Login</string>
     <string name="title_activity_main">MainActivity</string>
     <string name="title_activity_display_courses">Courses</string>
-    <string name="course_end_point">https://caw2015.casecurecloud.com:8443/cawTest</string>
+    <string name="course_end_point">https://caw2015api.casecurecloud.com/cawTest</string>
 
     <string name="hello_world">Hello world!</string>
 </resources>
