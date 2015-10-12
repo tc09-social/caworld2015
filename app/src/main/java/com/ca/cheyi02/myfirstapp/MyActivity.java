@@ -75,22 +75,6 @@ public class MyActivity extends Activity {
         }
     }
 
-    public void login(View view) {
-        String result = null;
-        try {
-            result = new RetrieveLinkTask().execute(getResources().getString(R.string.course_end_point)).get();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        }
-        Intent intent = new Intent(this, DisplayCoursesActivity.class);
-
-        intent.putExtra(EXTRA_USERNAME, result);
-        startActivity(intent);
-        Toast.makeText(this, result, Toast.LENGTH_LONG).show();
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -100,8 +84,20 @@ public class MyActivity extends Activity {
 
         button.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                login(v);
+            public void onClick(View view) {
+                String result = null;
+                try {
+                    result = new RetrieveLinkTask().execute(getResources().getString(R.string.course_end_point)).get();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                }
+                Intent intent = new Intent(getApplicationContext(), DisplayCoursesActivity.class);
+
+                intent.putExtra(EXTRA_USERNAME, result);
+                startActivity(intent);
+                Toast.makeText(getApplicationContext(), result, Toast.LENGTH_LONG).show();
             }
         });
     }
