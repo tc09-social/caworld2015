@@ -12,5 +12,5 @@
         android:textColor="#0084C9"
         android:textColorHighlight="#339E35"
         android:textSize="32dp"
-        android:onClick="login"/>
+        android:id="@+id/loginButton"/>
 </LinearLayout>
