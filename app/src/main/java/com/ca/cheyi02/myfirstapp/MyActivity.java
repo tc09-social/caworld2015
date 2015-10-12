@@ -23,6 +23,7 @@ import java.util.concurrent.ExecutionException;
 public class MyActivity extends Activity {
     public final static String EXTRA_USERNAME = "com.ca.cheyi02.myfirstapp.USERNAME";
     private static final String TAG = MyActivity.class.getName();
+    Button mButton;
 
     private String convertInputStreamToString (InputStream inputStream) throws IOException {
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
@@ -80,11 +81,12 @@ public class MyActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my);
 
-        Button button = (Button)findViewById(R.id.loginButton);
+        mButton = (Button)findViewById(R.id.loginButton);
 
-        button.setOnClickListener(new View.OnClickListener() {
+        mButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                mButton.setEnabled(false);
                 String result = null;
                 try {
                     result = new RetrieveLinkTask().execute(getResources().getString(R.string.course_end_point)).get();
@@ -100,6 +102,12 @@ public class MyActivity extends Activity {
                 Toast.makeText(getApplicationContext(), result, Toast.LENGTH_LONG).show();
             }
         });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mButton.setEnabled(true);
     }
 
     @Override
