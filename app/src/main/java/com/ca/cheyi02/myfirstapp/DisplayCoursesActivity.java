@@ -10,7 +10,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.content.Intent;
-import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -41,15 +40,6 @@ public class DisplayCoursesActivity extends Activity {
         iv.setImageResource(imageRID(image));
     }
 
-
-    void addCourseList() {
-
-        Toast.makeText(getApplicationContext(), "hello", Toast.LENGTH_LONG).show();
-        addOneCourse("1001", "CA Identity Suite 101", "three-com-1");
-        addOneCourse("1002", "CA Identity Suite 102", "three-com-2");
-        addOneCourse("1003", "CA Identity Suite 103", "three-com-3");
-        addOneCourse("1004", "CA Identity Suite 104", "three-com-1");
-    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -74,7 +64,6 @@ public class DisplayCoursesActivity extends Activity {
         } catch (Exception e) {
             Log.d(TAG, "exception", e);
         }
-//        addCourseList();
     }
 
     @Override

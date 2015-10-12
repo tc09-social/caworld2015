@@ -6,8 +6,9 @@
     <string name="password_message">Password</string>
     <string name="button_login">Get Schedule</string>
     <string name="title_activity_main">MainActivity</string>
-    <string name="title_activity_display_courses">Course Listing</string>
+    <string name="title_activity_display_courses">Courses Listing</string>
     <string name="course_end_point">https://caw2015api.casecurecloud.com/cawTest</string>
+    <string name="pcourse_end_point">https://caw2015api.casecurecloud.com/appTest</string>
 
     <string name="hello_world">Hello world!</string>
 </resources>

@@ -1,7 +1,6 @@
 package com.ca.cheyi02.myfirstapp;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -18,6 +17,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.concurrent.ExecutionException;
 
 public class MyActivity extends Activity {
     public final static String EXTRA_USERNAME = "com.ca.cheyi02.myfirstapp.USERNAME";
@@ -39,7 +39,6 @@ public class MyActivity extends Activity {
     private String RetrieveLink(String urlString) {
         InputStream inStream = null;
         HttpURLConnection urlConnection = null;
-        Integer result=0;
         String response="";
 
         try {
@@ -64,10 +63,6 @@ public class MyActivity extends Activity {
     }
 
     private class RetrieveLinkTask extends AsyncTask <String, String, String> {
-        Context context;
-        private RetrieveLinkTask(Context context) {
-            this.context = context.getApplicationContext();
-        }
 
         @Override
         protected String doInBackground(String... urls) {
@@ -75,18 +70,24 @@ public class MyActivity extends Activity {
         }
 
         protected void onPostExecute(String result) {
-            Intent intent = new Intent(context, DisplayCoursesActivity.class);
-
-            intent.putExtra(EXTRA_USERNAME, result);
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            context.startActivity(intent);
-            Toast.makeText(getApplicationContext(), result, Toast.LENGTH_LONG).show();
             Log.d("Download", result);
         }
     }
 
     public void login(View view) {
-        new RetrieveLinkTask(this).execute(getResources().getString(R.string.course_end_point));
+        String result = null;
+        try {
+            result = new RetrieveLinkTask().execute(getResources().getString(R.string.course_end_point)).get();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+        Intent intent = new Intent(this, DisplayCoursesActivity.class);
+
+        intent.putExtra(EXTRA_USERNAME, result);
+        startActivity(intent);
+        Toast.makeText(this, result, Toast.LENGTH_LONG).show();
     }
 
     @Override
