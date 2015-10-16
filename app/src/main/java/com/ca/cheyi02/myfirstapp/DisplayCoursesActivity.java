@@ -2,21 +2,22 @@ package com.ca.cheyi02.myfirstapp;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.content.Intent;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
+import java.util.Observable;
+import java.util.Observer;
 
 
-public class DisplayCoursesActivity extends Activity {
+public class DisplayCoursesActivity extends Activity implements Observer {
     private static final String TAG = DisplayCoursesActivity.class.getName();
+    private CoursesListing mModel=null;
+    private TextView mUsernameText=null;
+    private LinearLayout mContainer=null;
 
     int imageRID(String imageName) {
         if (imageName.equals("three-com-1")) return R.drawable.threecom1;
@@ -26,9 +27,8 @@ public class DisplayCoursesActivity extends Activity {
 
     void addOneCourse(String id, String name, String image) {
 
-        LinearLayout container = (LinearLayout) findViewById(R.id.list_container);
-        View view = getLayoutInflater().inflate(R.layout.course, container, false);
-        container.addView(view);
+        View view = getLayoutInflater().inflate(R.layout.course, mContainer, false);
+        mContainer.addView(view);
 
         ViewGroup viewGroup =(ViewGroup) ((ViewGroup) view).getChildAt(0);
         TextView tv1 = (TextView) viewGroup.getChildAt(1);
@@ -45,24 +45,24 @@ public class DisplayCoursesActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_display_courses);
 
-        Intent intent = getIntent();
-        String usernameString = intent.getStringExtra(MyActivity.EXTRA_USERNAME);
-        try {
-            JSONObject jsonObject = new JSONObject(usernameString);
-            String firstNameString = jsonObject.getString("firstName");
-            TextView set_usernameText = (TextView) findViewById(R.id.set_username_message);
-            set_usernameText.setText(firstNameString);
-            JSONObject regCourse = jsonObject.getJSONObject("regCourses");
-            JSONArray courses = regCourse.getJSONArray("course");
-            for (int i=0; i < courses.length(); ++i) {
-                JSONObject course = courses.getJSONObject(i);
-                String idString = course.getString("id");
-                String nameString = course.getString("name");
-                String imageString = course.getString("image");
-                addOneCourse(idString, nameString, imageString);
-            }
-        } catch (Exception e) {
-            Log.d(TAG, "exception", e);
+        mModel = new CoursesListing(this);
+        mModel.addObserver(this);
+        mUsernameText = (TextView) findViewById(R.id.set_username_message);
+        mContainer = (LinearLayout) findViewById(R.id.list_container);
+        mUsernameText.setText("no data");
+        mModel.getCoursesListing();
+    }
+
+    @Override
+    public void update(Observable observable, Object data) {
+        if (mUsernameText != null) {
+            mUsernameText.setText(mModel.getFirstName());
+        }
+        if (mContainer != null) {
+            for (int i = 0; i < mModel.getCoursesLength(); ++i)
+                addOneCourse(mModel.getCourseFieldAtIndex(i, "id"),
+                        mModel.getCourseFieldAtIndex(i, "name"),
+                        mModel.getCourseFieldAtIndex(i, "image"));
         }
     }
 

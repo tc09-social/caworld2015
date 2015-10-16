@@ -12,5 +12,6 @@
         android:textColor="#0084C9"
         android:textColorHighlight="#339E35"
         android:textSize="32dp"
-        android:id="@+id/loginButton"/>
+        android:id="@+id/getButton"
+        android:onClick="displayCourseListing"/>
 </LinearLayout>
