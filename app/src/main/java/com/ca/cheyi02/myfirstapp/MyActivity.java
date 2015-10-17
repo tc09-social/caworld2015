@@ -10,7 +10,6 @@ import android.widget.Button;
 
 
 public class MyActivity extends Activity {
-    private static final String TAG = MyActivity.class.getName();
     Button mButton;
 
     public void displayCourseListing(View view) {

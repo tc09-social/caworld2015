@@ -49,8 +49,16 @@ public class DisplayCoursesActivity extends Activity implements Observer {
         mModel.addObserver(this);
         mUsernameText = (TextView) findViewById(R.id.set_username_message);
         mContainer = (LinearLayout) findViewById(R.id.list_container);
-        mUsernameText.setText("no data");
+        mUsernameText.setText("Loading ... ");
         mModel.getCoursesListing();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (mModel != null) {
+            mModel.processPendingRequest();
+        }
     }
 
     @Override

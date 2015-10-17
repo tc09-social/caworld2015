@@ -1,5 +1,6 @@
 package com.ca.cheyi02.myfirstapp;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
@@ -16,13 +17,13 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Observable;
-import java.util.concurrent.ExecutionException;
 
 public class CoursesListing extends Observable {
     private static final String TAG = MyActivity.class.getName();
     private String mJsonString=null;
     private String mErrorString="";
     private Context mContext;
+    private Activity mActivity;
     private String mFirstName=null;
     private JSONObject mRegCourse=null;
     JSONArray mCourses=null;
@@ -75,30 +76,42 @@ public class CoursesListing extends Observable {
 
         protected void onPostExecute(String result) {
             Log.d("Download", result);
+            mJsonString = result;
+            doParse();
         }
     }
 
 
-    public CoursesListing(Context context) {
-        mContext = context;
+    public CoursesListing(Activity activity) {
+        mActivity = activity;
+        mContext = mActivity.getApplicationContext();
     }
 
-    public void getCoursesListing() {
-        Log.d("Download", mContext.getResources().getString(R.string.course_end_point));
+    private void doParse() {
+        if (mJsonString == null) return;
         try {
-            mJsonString = new RetrieveLinkTask().execute(mContext.getResources().getString(R.string.course_end_point)).get();
             JSONObject jsonObject = new JSONObject(mJsonString);
             mFirstName = jsonObject.getString("firstName");
             mRegCourse = jsonObject.getJSONObject("regCourses");
             mCourses = mRegCourse.getJSONArray("course");
-        } catch (InterruptedException | ExecutionException | JSONException e) {
+        } catch (JSONException e) {
             mRegCourse = null;
             mFirstName = null;
             mErrorString = e.getMessage();
             e.printStackTrace();
         }
         setChanged();
-        notifyObservers();
+        mActivity.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                notifyObservers();
+            }
+        });
+    }
+
+    public void getCoursesListing() {
+        Log.d("Download", mContext.getResources().getString(R.string.course_end_point));
+        new RetrieveLinkTask().execute(mContext.getResources().getString(R.string.course_end_point));
     }
 
     public String getFirstName() {
@@ -118,5 +131,9 @@ public class CoursesListing extends Observable {
             theString = e.getMessage();
         }
         return theString;
+    }
+
+    public void processPendingRequest() {
+        // do nothing
     }
 }
