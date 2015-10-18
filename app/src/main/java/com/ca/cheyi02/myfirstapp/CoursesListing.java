@@ -3,8 +3,18 @@ package com.ca.cheyi02.myfirstapp;
 import android.app.Activity;
 import android.content.Context;
 import android.os.AsyncTask;
+import android.os.Bundle;
+import android.os.ResultReceiver;
 import android.util.Log;
 
+import com.l7tech.msso.MobileSso;
+import com.l7tech.msso.MobileSsoFactory;
+import com.l7tech.msso.service.MssoClient;
+import com.l7tech.msso.service.MssoIntents;
+
+import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -28,6 +38,10 @@ public class CoursesListing extends Observable {
     private JSONObject mRegCourse=null;
     JSONArray mCourses=null;
 
+    private MobileSso mMobileSso;
+    private ResultReceiver mReceiveJson;
+
+    /*
     private String convertInputStreamToString (InputStream inputStream) throws IOException {
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
         String line = "";
@@ -80,11 +94,36 @@ public class CoursesListing extends Observable {
             doParse();
         }
     }
+    */
 
 
     public CoursesListing(Activity activity) {
         mActivity = activity;
         mContext = mActivity.getApplicationContext();
+
+        mMobileSso = MobileSsoFactory.getInstance(mContext, Config.ssoConf);
+        mReceiveJson = new ResultReceiver(null) {
+            @Override
+            protected void onReceiveResult(int resultCode, Bundle resultData) {
+                long requestId = resultData.getLong(MssoIntents.RESULT_REQUEST_ID);
+
+                if (resultCode != MssoIntents.RESULT_CODE_SUCCESS) {
+                    mJsonString = null;
+                    mErrorString = resultData.getString(MssoIntents.RESULT_ERROR_MESSAGE);
+                } else {
+                    final HttpResponse httpResponse = MssoClient.takeResponse(requestId);
+                    if (httpResponse != null) {
+                        try {
+                            mJsonString = EntityUtils.toString(httpResponse.getEntity());
+                            doParse();
+                        } catch (IOException e) {
+                            mJsonString = null;
+                            mErrorString = e.getMessage();
+                        }
+                    }
+                }
+            }
+        };
     }
 
     private void doParse() {
@@ -111,7 +150,9 @@ public class CoursesListing extends Observable {
 
     public void getCoursesListing() {
         Log.d("Download", mContext.getResources().getString(R.string.course_end_point));
-        new RetrieveLinkTask().execute(mContext.getResources().getString(R.string.course_end_point));
+//        new RetrieveLinkTask().execute(mContext.getResources().getString(R.string.course_end_point));
+        mMobileSso.processRequest(new HttpGet(mContext.getResources().getString(R.string.course_end_point)),
+                mReceiveJson);
     }
 
     public String getFirstName() {
@@ -134,6 +175,9 @@ public class CoursesListing extends Observable {
     }
 
     public void processPendingRequest() {
-        // do nothing
+        if (mMobileSso != null) {
+            mMobileSso.processPendingRequests();
+//            if (hasChanged()) notifyObservers();
+        }
     }
 }
